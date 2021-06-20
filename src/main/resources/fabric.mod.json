@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "oe",
+  "version": "1.0",
+
+  "name": "Overworld Expansion",
+  "description": "Adds in wagons and dog sleds for carrying gear aid in your adventure across Overworld! Built for Modfest 1.17 ",
+  "authors": [
+    "quantamancer"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": "https://github.com/quantamancer/OverworldExpansion"
+  },
+
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.quantamancer.oe.OverworldExpansion"
+    ]
+  },
+  "mixins": [
+    "oe.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

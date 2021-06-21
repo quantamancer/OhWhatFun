@@ -1,4 +1,4 @@
-package io.github.quantamancer.oe.entity;
+package io.github.quantamancer.owf.entity;
 
 public class ModEntities {
 

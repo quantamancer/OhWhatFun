@@ -1,4 +1,4 @@
-package io.github.quantamancer.oe.item;
+package io.github.quantamancer.owf.item;
 
 public class ModItems {
 

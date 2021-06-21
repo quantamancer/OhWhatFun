@@ -1,11 +1,11 @@
-package io.github.quantamancer.oe;
+package io.github.quantamancer.owf;
 
-import io.github.quantamancer.oe.block.ModBlocks;
-import io.github.quantamancer.oe.entity.ModEntities;
-import io.github.quantamancer.oe.item.ModItems;
+import io.github.quantamancer.owf.block.ModBlocks;
+import io.github.quantamancer.owf.entity.ModEntities;
+import io.github.quantamancer.owf.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
-public class OverworldExpansion implements ModInitializer {
+public class OhWhatFunItIs implements ModInitializer {
 
     @Override
     public void onInitialize() {

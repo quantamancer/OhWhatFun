@@ -1,4 +1,4 @@
-package io.github.quantamancer.oe.entity.player_sled;
+package io.github.quantamancer.owf.entity.player_sled;
 
 public class EntityPlayerSledModel {
 

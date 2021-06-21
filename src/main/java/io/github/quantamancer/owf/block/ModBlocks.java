@@ -1,4 +1,4 @@
-package io.github.quantamancer.oe.block;
+package io.github.quantamancer.owf.block;
 
 public class ModBlocks {
 

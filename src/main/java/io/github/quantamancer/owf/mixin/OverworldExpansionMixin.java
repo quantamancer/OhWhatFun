@@ -1,4 +1,4 @@
-package io.github.quantamancer.oe.mixin;
+package io.github.quantamancer.owf.mixin;
 
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "oe",
+  "id": "owf",
   "version": "1.0",
 
-  "name": "Overworld Expansion",
-  "description": "Adds in wagons and dog sleds for carrying gear aid in your adventure across Overworld! Built for Modfest 1.17 ",
+  "name": "Oh What Fun It Is!",
+  "description": "Adds sleds for carrying gear vital for your adventure across Overworld! Built for Modfest 1.17",
   "authors": [
     "quantamancer"
   ],
   "contact": {
     "homepage": "",
-    "sources": "https://github.com/quantamancer/OverworldExpansion"
+    "sources": "https://github.com/quantamancer/OhWhatFunItIs"
   },
 
   "license": "MIT",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/owf/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.quantamancer.oe.OverworldExpansion"
+      "io.github.quantamancer.owf.OhWhatFunItIs"
     ]
   },
   "mixins": [
-    "oe.mixins.json"
+    "owf.mixins.json"
   ],
 
   "depends": {

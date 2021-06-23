@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 public class EntityPlayerSled extends LivingEntity {
 
-    protected EntityPlayerSled(EntityType<? extends LivingEntity> entityType, World world) {
+    public EntityPlayerSled(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
 

@@ -1,34 +1,37 @@
 package io.github.quantamancer.owf.entity.storage_sled;
 
+import io.github.quantamancer.owf.entity.ModEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Arm;
 import net.minecraft.world.World;
 
-public class EntityStorageSled extends Entity {
+public class EntityStorageSled extends LivingEntity {
 
-    public EntityStorageSled(EntityType<?> type, World world) {
-        super(type, world);
+    public EntityStorageSled(EntityType<? extends LivingEntity> entityType, World world) {
+        super(entityType, world);
     }
 
     @Override
-    protected void initDataTracker() {
+    public Iterable<ItemStack> getArmorItems() {
+        return null;
+    }
+
+    @Override
+    public ItemStack getEquippedStack(EquipmentSlot slot) {
+        return null;
+    }
+
+    @Override
+    public void equipStack(EquipmentSlot slot, ItemStack stack) {
 
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {
-
-    }
-
-    @Override
-    protected void writeCustomDataToNbt(NbtCompound nbt) {
-
-    }
-
-    @Override
-    public Packet<?> createSpawnPacket() {
+    public Arm getMainArm() {
         return null;
     }
 }

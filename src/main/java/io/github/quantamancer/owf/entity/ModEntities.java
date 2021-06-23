@@ -7,6 +7,7 @@ import io.github.quantamancer.owf.entity.storage_sled.EntityStorageSledRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -29,6 +30,8 @@ public class ModEntities {
 
     @Environment(EnvType.CLIENT)
     public static void register() {
+        FabricDefaultAttributeRegistry.register(PLAYER_SLED, EntityPlayerSled.createLivingAttributes());
+        FabricDefaultAttributeRegistry.register(STORAGE_SLED, EntityStorageSled.createLivingAttributes());
         EntityRendererRegistry.INSTANCE.register(PLAYER_SLED, EntityPlayerSledRenderer::new);
         EntityRendererRegistry.INSTANCE.register(STORAGE_SLED, EntityStorageSledRenderer::new);
     }

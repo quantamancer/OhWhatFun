@@ -15,7 +15,7 @@ public class ItemPlayerSledSpawner extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
 
         if(!context.getWorld().isClient()) {
-            EntityPlayerSled sled = new EntityPlayerSled(ModEntities.STORAGE_SLED, context.getWorld()).spawn(context.getWorld(), context.getBlockPos().getX()+ 0.5D, context.getBlockPos().getY() + 1.5D, context.getBlockPos().getZ()+ 0.5D, context.getPlayerYaw());
+            EntityPlayerSled sled = new EntityPlayerSled(ModEntities.PLAYER_SLED, context.getWorld()).spawn(context.getWorld(), context.getBlockPos().getX()+ 0.5D, context.getBlockPos().getY() + 1.5D, context.getBlockPos().getZ()+ 0.5D, context.getPlayerYaw());
             context.getWorld().spawnEntity(sled);
             context.getStack().decrement(1);
         }

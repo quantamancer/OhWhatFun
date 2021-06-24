@@ -2,8 +2,6 @@ package io.github.quantamancer.owf.entity;
 
 import io.github.quantamancer.owf.entity.player_sled.EntityPlayerSled;
 import io.github.quantamancer.owf.entity.player_sled.EntityPlayerSledRenderer;
-import io.github.quantamancer.owf.entity.storage_sled.EntityStorageSled;
-import io.github.quantamancer.owf.entity.storage_sled.EntityStorageSledRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
@@ -23,18 +21,10 @@ public class ModEntities {
             FabricEntityTypeBuilder.create(SpawnGroup.MISC, EntityPlayerSled::new).dimensions(new EntityDimensions(1F, 0.75F, true)).build()
     );
 
-    public static final EntityType<EntityStorageSled> STORAGE_SLED = Registry.register(
-            Registry.ENTITY_TYPE,
-            new Identifier("owf", "storage_sled"),
-            FabricEntityTypeBuilder.create(SpawnGroup.MISC, EntityStorageSled::new).dimensions(EntityDimensions.fixed(1f, 0.75f)).build()
-    );
-
     @Environment(EnvType.CLIENT)
     public static void register() {
         FabricDefaultAttributeRegistry.register(PLAYER_SLED, EntityPlayerSled.createMobAttributes());
-        FabricDefaultAttributeRegistry.register(STORAGE_SLED, EntityStorageSled.createMobAttributes());
         EntityRendererRegistry.INSTANCE.register(PLAYER_SLED, EntityPlayerSledRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(STORAGE_SLED, EntityStorageSledRenderer::new);
     }
 
 }

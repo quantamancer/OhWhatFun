@@ -1,4 +1,4 @@
 {
-  "item.owf.spawn_player_sled" : "Regular Sled",
-  "item.owf.spawn_storage_sled" : "Cargo Sled"
+  "item.owf.spawn_player_sled" : "Sled",
+  "entity.owf.player_sled" : "Sled"
 }

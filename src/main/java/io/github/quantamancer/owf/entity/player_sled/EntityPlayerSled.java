@@ -28,6 +28,10 @@ public class EntityPlayerSled extends MobEntity implements Inventory, NamedScree
 
     private float yawVelocity;
     private DefaultedList<ItemStack> inventory;
+    private boolean pressingLeft;
+    private boolean pressingRight;
+    private boolean pressingForward;
+    private boolean pressingBack;
 
     public EntityPlayerSled(EntityType<? extends MobEntity> entityType, World world) {
         super(entityType, world);
@@ -84,6 +88,40 @@ public class EntityPlayerSled extends MobEntity implements Inventory, NamedScree
         entity.prevYaw += g - f;
         entity.setYaw(entity.getYaw() + g - f);
         entity.setHeadYaw(entity.getYaw());
+    }
+
+    public void setPressingForward(boolean pressingForward) {
+        this.pressingForward = pressingForward;
+    }
+
+    public void setPressingBack(boolean pressingBack) {
+        this.pressingBack = pressingBack;
+    }
+
+    public void setPressingLeft(boolean pressingLeft) {
+        this.pressingLeft = pressingLeft;
+    }
+
+    public void setPressingRight(boolean pressingRight) {
+        this.pressingRight = pressingRight;
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        movingTick();
+    }
+
+    private void movingTick() {
+        if(pressingForward) {
+
+        } else if (pressingLeft) {
+
+        } else if (pressingRight) {
+
+        } else if (pressingBack) {
+
+        }
     }
 
     public int size() {

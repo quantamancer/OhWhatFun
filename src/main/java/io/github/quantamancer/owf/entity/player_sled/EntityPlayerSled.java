@@ -90,38 +90,16 @@ public class EntityPlayerSled extends MobEntity implements Inventory, NamedScree
         entity.setHeadYaw(entity.getYaw());
     }
 
-    public void setPressingForward(boolean pressingForward) {
+    public void setInputs(boolean pressingLeft, boolean pressingRight, boolean pressingForward, boolean pressingBack) {
+        this.pressingLeft = pressingLeft;
+        this.pressingRight = pressingRight;
         this.pressingForward = pressingForward;
-    }
-
-    public void setPressingBack(boolean pressingBack) {
         this.pressingBack = pressingBack;
     }
 
-    public void setPressingLeft(boolean pressingLeft) {
-        this.pressingLeft = pressingLeft;
-    }
-
-    public void setPressingRight(boolean pressingRight) {
-        this.pressingRight = pressingRight;
-    }
-
     @Override
-    public void baseTick() {
-        super.baseTick();
-        movingTick();
-    }
-
-    private void movingTick() {
-        if(pressingForward) {
-
-        } else if (pressingLeft) {
-
-        } else if (pressingRight) {
-
-        } else if (pressingBack) {
-
-        }
+    public void tick() {
+        super.tick();
     }
 
     public int size() {

@@ -1,7 +1,8 @@
 package io.github.quantamancer.owf.entity.player_sled;
 
 import io.github.quantamancer.owf.entity.ModEntities;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.damage.DamageSource;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
@@ -70,6 +72,15 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         return ActionResult.PASS;
+    }
+
+    @Override
+    protected void onBlockCollision(BlockState state) {
+        if (state.getBlock() == Blocks.SNOW
+                || state.getBlock() == Blocks.SNOW_BLOCK
+                || state.getBlock() == Blocks.POWDER_SNOW) {
+            this.world.addParticle(ParticleTypes.SNOWFLAKE, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D));
+        }
     }
 
     @Override

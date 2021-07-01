@@ -1,10 +1,12 @@
 package io.github.quantamancer.owf.entity.player_sled;
 
-
 import io.github.quantamancer.owf.entity.ModEntities;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -13,10 +15,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -24,16 +28,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
-public class EntityPlayerSled extends MobEntity implements Inventory, NamedScreenHandlerFactory {
+public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScreenHandlerFactory {
 
-    private float yawVelocity;
     private DefaultedList<ItemStack> inventory;
-    private boolean pressingLeft;
-    private boolean pressingRight;
-    private boolean pressingForward;
-    private boolean pressingBack;
 
-    public EntityPlayerSled(EntityType<? extends MobEntity> entityType, World world) {
+    public EntityPlayerSled(EntityType<? extends HorseEntity> entityType, World world) {
         super(entityType, world);
         this.inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
@@ -50,58 +49,100 @@ public class EntityPlayerSled extends MobEntity implements Inventory, NamedScree
     }
 
     @Override
+    protected void initGoals() {
+        this.goalSelector.add(1, new LookAroundGoal(this));
+    }
+
+    @Override
+    public ActionResult interactAt(PlayerEntity player, Vec3d hitPos, Hand hand) {
+        ItemStack currStack = player.getStackInHand(hand);
+        if(!currStack.isEmpty()) {
+            ActionResult result = currStack.useOnEntity(player, this, hand);
+            if (result.isAccepted())
+                return result;
+        } else if (player.isSneaking()) {
+            player.openHandledScreen(this);
+            return ActionResult.SUCCESS;
+        } else if (currStack.isEmpty() && !player.isSneaking()) { return ActionResult.success(player.startRiding(this)); }
+        return super.interact(player, hand);
+    }
+
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        return ActionResult.PASS;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return null;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.ITEM_SHIELD_BLOCK;
+    }
+
+    @Override
+    protected void playJumpSound() {
+        this.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.4F, 1.0F);
+    }
+
+    @Override
+    protected void playWalkSound(BlockSoundGroup group) {
+        this.playSound(SoundEvents.ENTITY_WOLF_STEP, 0.4F, 1.0F);
+    }
+
+    @Override
+    protected boolean receiveFood(PlayerEntity player, ItemStack item) {
+        return false;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.ENTITY_ITEM_BREAK;
+    }
+
+    @Override
+    public boolean isBreedingItem(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean canJump() {
+        return false;
+    }
+
+    @Override
     public double getMountedHeightOffset() {
         return 0.1D;
     }
 
     @Override
-    public ActionResult interactAt(PlayerEntity player, Vec3d hitPos, Hand hand) {
-       ItemStack currStack = player.getStackInHand(hand);
-       if(!currStack.isEmpty()) {
-           ActionResult result = currStack.useOnEntity(player, this, hand);
-           if (result.isAccepted())
-               return result;
-       } else if (player.isSneaking()) {
-           player.openHandledScreen(this);
-           return ActionResult.SUCCESS;
-       } else if (currStack.isEmpty() && !player.isSneaking()) { return ActionResult.success(player.startRiding(this)); }
-       return super.interact(player, hand);
+    public boolean canBreedWith(AnimalEntity other) {
+        return false;
     }
 
     @Override
-    public void updatePassengerPosition(Entity passenger) {
-        if (this.hasPassenger(passenger)) {
-            float f = 0.0F;
-            float g = (float)((this.isRemoved() ? 0.009999999776482582D : this.getMountedHeightOffset()) + passenger.getHeightOffset());
-            Vec3d vec3d = (new Vec3d((double)f, 0.0D, 0.0D)).rotateY(this.getYaw() * 0.017453292F - 1.5707964F);
-            passenger.setPosition(this.getX() + vec3d.x, this.getY() + (double)g, this.getZ() + vec3d.z);
-            passenger.setYaw(passenger.getYaw() + this.yawVelocity);
-            passenger.setHeadYaw(passenger.getHeadYaw() + this.yawVelocity);
-            this.copyEntityData(passenger);
-        }
-    }
-
-    protected void copyEntityData(Entity entity) {
-        entity.setBodyYaw(this.getYaw());
-        float f = MathHelper.wrapDegrees(entity.getYaw() - this.getYaw() + 90);
-        float g = MathHelper.clamp(f, -105.0F, 105.0F);
-        entity.prevYaw += g - f;
-        entity.setYaw(entity.getYaw() + g - f);
-        entity.setHeadYaw(entity.getYaw());
-    }
-
-    public void setInputs(boolean pressingLeft, boolean pressingRight, boolean pressingForward, boolean pressingBack) {
-        this.pressingLeft = pressingLeft;
-        this.pressingRight = pressingRight;
-        this.pressingForward = pressingForward;
-        this.pressingBack = pressingBack;
+    public boolean isTame() {
+        return true;
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public boolean isSaddled() {
+        return true;
     }
 
+    @Override
+    public boolean hasArmorSlot() {
+        return false;
+    }
+
+    @Override
+    public boolean hasArmorInSlot() {
+        return false;
+    }
+
+    @Override
     public int size() {
         return 9*6;
     }
@@ -153,9 +194,6 @@ public class EntityPlayerSled extends MobEntity implements Inventory, NamedScree
 
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
-        if (this.isRemoved()) {
-            return false;
-        }
         return true;
     }
 

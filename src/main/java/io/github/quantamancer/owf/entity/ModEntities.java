@@ -23,7 +23,7 @@ public class ModEntities {
 
     @Environment(EnvType.CLIENT)
     public static void register() {
-        FabricDefaultAttributeRegistry.register(PLAYER_SLED, EntityPlayerSled.createMobAttributes());
+        FabricDefaultAttributeRegistry.register(PLAYER_SLED, EntityPlayerSled.createBaseHorseAttributes());
         EntityRendererRegistry.INSTANCE.register(PLAYER_SLED, EntityPlayerSledRenderer::new);
     }
 

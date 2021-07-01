@@ -1,9 +1,7 @@
 package io.github.quantamancer.owf.entity.player_sled;
 
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class EntityPlayerSledRenderer extends MobEntityRenderer<EntityPlayerSled, EntityPlayerSledModel> {

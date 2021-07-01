@@ -23,6 +23,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -75,12 +76,23 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
     }
 
     @Override
-    protected void onBlockCollision(BlockState state) {
-        if (state.getBlock() == Blocks.SNOW
-                || state.getBlock() == Blocks.SNOW_BLOCK
-                || state.getBlock() == Blocks.POWDER_SNOW) {
-            this.world.addParticle(ParticleTypes.SNOWFLAKE, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D));
+    public void tickMovement() {
+        super.tickMovement();
+        var currBlock = this.world.getBlockState(this.getBlockPos().down());
+        if (this.hasPassengers()) {
+            if (currBlock.getBlock() == Blocks.SNOW || currBlock.getBlock() == Blocks.SNOW_BLOCK || currBlock.getBlock() == Blocks.POWDER_SNOW) {
+                for (int i = 0; i < 5; ++i)
+                    this.world.addParticle(ParticleTypes.SNOWFLAKE, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
+            } else if (currBlock.getBlock() == Blocks.ICE || currBlock.getBlock() == Blocks.FROSTED_ICE || currBlock.getBlock() == Blocks.PACKED_ICE || currBlock.getBlock() == Blocks.BLUE_ICE) {
+                for (int j = 0; j < 5; ++j)
+                    this.world.addParticle(ParticleTypes.DRIPPING_WATER, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
+            }
         }
+    }
+
+    @Override
+    public boolean hasPlayerRider() {
+        return false;
     }
 
     @Override
@@ -100,6 +112,11 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
 
     @Override
     protected void playWalkSound(BlockSoundGroup group) {
+        this.playSound(SoundEvents.ENTITY_WOLF_STEP, 0.4F, 1.0F);
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
         this.playSound(SoundEvents.ENTITY_WOLF_STEP, 0.4F, 1.0F);
     }
 

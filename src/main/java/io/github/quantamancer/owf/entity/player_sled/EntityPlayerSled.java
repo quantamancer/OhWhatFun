@@ -1,26 +1,34 @@
 package io.github.quantamancer.owf.entity.player_sled;
 
+import com.google.common.collect.Maps;
 import io.github.quantamancer.owf.entity.ModEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
+import net.minecraft.entity.ai.goal.EatGrassGoal;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -29,11 +37,16 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScreenHandlerFactory {
 
     private DefaultedList<ItemStack> inventory;
+    private static final TrackedData<Byte> COLOR;
+    private static final Map<DyeColor, float[]> COLORS;
 
     public EntityPlayerSled(EntityType<? extends HorseEntity> entityType, World world) {
         super(entityType, world);
@@ -52,8 +65,15 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
     }
 
     @Override
+    public void openInventory(PlayerEntity player) {
+        if (!this.world.isClient && (!this.hasPassengers() || this.hasPassenger(player)) && this.isTame()) {
+            player.openHandledScreen(this);
+        }
+    }
+
+    @Override
     protected void initGoals() {
-        this.goalSelector.add(1, new LookAroundGoal(this));
+        this.goalSelector.add(1, new EatGrassGoal(this));
     }
 
     @Override
@@ -63,9 +83,6 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
             ActionResult result = currStack.useOnEntity(player, this, hand);
             if (result.isAccepted())
                 return result;
-        } else if (player.isSneaking()) {
-            player.openHandledScreen(this);
-            return ActionResult.SUCCESS;
         } else if (currStack.isEmpty() && !player.isSneaking()) { return ActionResult.success(player.startRiding(this)); }
         return super.interact(player, hand);
     }
@@ -76,16 +93,13 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
     }
 
     @Override
-    public void tickMovement() {
-        super.tickMovement();
-        var currBlock = this.world.getBlockState(this.getBlockPos().down());
-        if (this.hasPassengers()) {
+    protected void onBlockCollision(BlockState state) {
+        super.onBlockCollision(state);
+        BlockState currBlock = this.getLandingBlockState();
+        if (this.getVelocity() != Vec3d.ZERO) {
             if (currBlock.getBlock() == Blocks.SNOW || currBlock.getBlock() == Blocks.SNOW_BLOCK || currBlock.getBlock() == Blocks.POWDER_SNOW) {
-                for (int i = 0; i < 5; ++i)
+                for (int i = 0; i < 2; ++i)
                     this.world.addParticle(ParticleTypes.SNOWFLAKE, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
-            } else if (currBlock.getBlock() == Blocks.ICE || currBlock.getBlock() == Blocks.FROSTED_ICE || currBlock.getBlock() == Blocks.PACKED_ICE || currBlock.getBlock() == Blocks.BLUE_ICE) {
-                for (int j = 0; j < 5; ++j)
-                    this.world.addParticle(ParticleTypes.DRIPPING_WATER, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
             }
         }
     }
@@ -242,5 +256,42 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
                 dropStack(itemStack);
             }
         }
+    }
+
+    private static float[] getDyedColor(DyeColor color) {
+        if (color == DyeColor.WHITE) {
+            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
+        } else {
+            float[] fs = color.getColorComponents();
+            float f = 0.75F;
+            return new float[]{fs[0] * 0.75F, fs[1] * 0.75F, fs[2] * 0.75F};
+        }
+    }
+
+    public static float[] getRgbColor(DyeColor dyeColor) {
+        return (float[])COLORS.get(dyeColor);
+    }
+
+    public void setColor(DyeColor color) {
+        byte b = (Byte)this.dataTracker.get(COLOR);
+        this.dataTracker.set(COLOR, (byte)(b & 240 | color.getId() & 15));
+    }
+
+    private static CraftingInventory createDyeMixingCraftingInventory(DyeColor firstColor, DyeColor secondColor) {
+        CraftingInventory craftingInventory = new CraftingInventory(new ScreenHandler((ScreenHandlerType)null, -1) {
+            public boolean canUse(PlayerEntity player) {
+                return false;
+            }
+        }, 2, 1);
+        craftingInventory.setStack(0, new ItemStack(DyeItem.byColor(firstColor)));
+        craftingInventory.setStack(1, new ItemStack(DyeItem.byColor(secondColor)));
+        return craftingInventory;
+    }
+
+    static {
+        COLOR = DataTracker.registerData(EntityPlayerSled.class, TrackedDataHandlerRegistry.BYTE);
+        COLORS = Maps.newEnumMap((Map) Arrays.stream(DyeColor.values()).collect(Collectors.toMap((dyeColor) -> {
+            return dyeColor;
+            }, EntityPlayerSled::getDyedColor)));
     }
 }

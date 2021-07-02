@@ -1,4 +1,9 @@
 {
-  "item.owf.spawn_player_sled" : "Sled",
-  "entity.owf.player_sled" : "Sled"
+  "entity.owf.player_sled" : "Sled",
+  "item.owf.oak_player_sled" : "Oak Sled",
+  "item.owf.spruce_player_sled" : "Spruce Sled",
+  "item.owf.birch_player_sled" : "Birch Sled",
+  "item.owf.jungle_player_sled" : "Jungle Sled",
+  "item.owf.acacia_player_sled" : "Acacia Sled",
+  "item.owf.dark_oak_player_sled" : "Dark Oak Sled"
 }

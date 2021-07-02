@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "S S",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "tag": "minecraft:jungle_planks"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "owf:jungle_player_sled",
+    "count": 1
+  }
+}
+

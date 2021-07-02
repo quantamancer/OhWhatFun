@@ -1,9 +1,11 @@
 package io.github.quantamancer.owf.entity.player_sled;
 
-import com.google.common.collect.Maps;
 import io.github.quantamancer.owf.entity.ModEntities;
+import io.github.quantamancer.owf.item.ModItems;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.EatGrassGoal;
 import net.minecraft.entity.damage.DamageSource;
@@ -14,21 +16,19 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.DyeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -37,23 +37,19 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScreenHandlerFactory {
 
     private DefaultedList<ItemStack> inventory;
-    private static final TrackedData<Byte> COLOR;
-    private static final Map<DyeColor, float[]> COLORS;
+    private static final TrackedData<Integer> SLED_TYPE;
 
     public EntityPlayerSled(EntityType<? extends HorseEntity> entityType, World world) {
         super(entityType, world);
         this.inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
-    public static EntityPlayerSled spawn(World world, double x, double y, double z, float yaw) {
+    public static EntityPlayerSled spawn (World world, double x, double y, double z, float yaw) {
         EntityPlayerSled sled = new EntityPlayerSled(ModEntities.PLAYER_SLED, world);
         sled.setPosition(x, y ,z);
         sled.setVelocity(Vec3d.ZERO);
@@ -74,6 +70,12 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
     @Override
     protected void initGoals() {
         this.goalSelector.add(1, new EatGrassGoal(this));
+    }
+
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(SLED_TYPE, SledType.OAK.ordinal());
     }
 
     @Override
@@ -101,6 +103,36 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
                 for (int i = 0; i < 2; ++i)
                     this.world.addParticle(ParticleTypes.SNOWFLAKE, this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
             }
+        }
+    }
+
+    public Item asItem() {
+        switch(this.getSledType()) {
+            case OAK:
+            default:
+                return ModItems.OAK_SLED_SPAWNER;
+            case SPRUCE:
+                return ModItems.SPRUCE_SLED_SPAWNER;
+            case BIRCH:
+                return ModItems.BIRCH_SLED_SPAWNER;
+            case JUNGLE:
+                return ModItems.JUNGLE_SLED_SPAWNER;
+            case ACACIA:
+                return ModItems.ACACIA_SLED_SPAWNER;
+            case DARK_OAK:
+                return ModItems.DARK_OAK_SLED_SPAWNER;
+        }
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        nbt.putString("Type", this.getSledType().getName());
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        if (nbt.contains("Type", 8)) {
+            this.setSledType(EntityPlayerSled.SledType.getType(nbt.getString("Type")));
         }
     }
 
@@ -184,6 +216,7 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
         return false;
     }
 
+
     @Override
     public int size() {
         return 9*6;
@@ -258,40 +291,60 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
         }
     }
 
-    private static float[] getDyedColor(DyeColor color) {
-        if (color == DyeColor.WHITE) {
-            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
-        } else {
-            float[] fs = color.getColorComponents();
-            float f = 0.75F;
-            return new float[]{fs[0] * 0.75F, fs[1] * 0.75F, fs[2] * 0.75F};
-        }
-    }
+    public void setSledType(EntityPlayerSled.SledType type) { this.dataTracker.set(SLED_TYPE, type.ordinal()); }
 
-    public static float[] getRgbColor(DyeColor dyeColor) {
-        return (float[])COLORS.get(dyeColor);
-    }
-
-    public void setColor(DyeColor color) {
-        byte b = (Byte)this.dataTracker.get(COLOR);
-        this.dataTracker.set(COLOR, (byte)(b & 240 | color.getId() & 15));
-    }
-
-    private static CraftingInventory createDyeMixingCraftingInventory(DyeColor firstColor, DyeColor secondColor) {
-        CraftingInventory craftingInventory = new CraftingInventory(new ScreenHandler((ScreenHandlerType)null, -1) {
-            public boolean canUse(PlayerEntity player) {
-                return false;
-            }
-        }, 2, 1);
-        craftingInventory.setStack(0, new ItemStack(DyeItem.byColor(firstColor)));
-        craftingInventory.setStack(1, new ItemStack(DyeItem.byColor(secondColor)));
-        return craftingInventory;
-    }
+    public EntityPlayerSled.SledType getSledType() { return EntityPlayerSled.SledType.getType((Integer)this.dataTracker.get(SLED_TYPE)); }
 
     static {
-        COLOR = DataTracker.registerData(EntityPlayerSled.class, TrackedDataHandlerRegistry.BYTE);
-        COLORS = Maps.newEnumMap((Map) Arrays.stream(DyeColor.values()).collect(Collectors.toMap((dyeColor) -> {
-            return dyeColor;
-            }, EntityPlayerSled::getDyedColor)));
+        SLED_TYPE = DataTracker.registerData(EntityPlayerSled.class, TrackedDataHandlerRegistry.INTEGER);
+    }
+
+    public enum SledType {
+        OAK(Blocks.OAK_PLANKS, "oak"),
+        SPRUCE(Blocks.SPRUCE_PLANKS, "spruce"),
+        BIRCH(Blocks.BIRCH_PLANKS, "birch"),
+        JUNGLE(Blocks.JUNGLE_PLANKS, "jungle"),
+        ACACIA(Blocks.ACACIA_PLANKS, "acacia"),
+        DARK_OAK(Blocks.DARK_OAK_PLANKS, "dark_oak");
+
+        private final String name;
+        private final Block baseBlock;
+
+        private SledType(Block baseBlock, String name) {
+            this.name = name;
+            this.baseBlock = baseBlock;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public Block getBaseBlock() {
+            return this.baseBlock;
+        }
+
+        public String toString() {
+            return this.name;
+        }
+
+        public static EntityPlayerSled.SledType getType(int type) {
+           EntityPlayerSled.SledType[] types = values();
+            if (type < 0 || type >= types.length) {
+                type = 0;
+            }
+            return types[type];
+        }
+
+        public static EntityPlayerSled.SledType getType(String name) {
+            EntityPlayerSled.SledType[] types = values();
+
+            for(int i = 0; i < types.length; ++i) {
+                if (types[i].getName().equals(name)) {
+                    return types[i];
+                }
+            }
+            return types[0];
+        }
+
     }
 }

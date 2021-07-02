@@ -7,7 +7,7 @@
   ],
   "key": {
     "L": {
-      "tag": "minecraft:birch_planks"
+      "item": "minecraft:birch_planks"
     },
     "S": {
       "item": "minecraft:stick"

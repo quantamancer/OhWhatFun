@@ -7,7 +7,7 @@
   ],
   "key": {
     "L": {
-      "tag": "minecraft:dark_oak_planks"
+      "item": "minecraft:dark_oak_planks"
     },
     "S": {
       "item": "minecraft:stick"

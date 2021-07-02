@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.model.BoatEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -19,7 +17,7 @@ public class EntityPlayerSledRenderer extends MobEntityRenderer<EntityPlayerSled
         this.texturesAndModels = (Map)Stream.of(EntityPlayerSled.SledType.values()).collect(ImmutableMap.toImmutableMap((type) -> {
             return type;
         }, (type) -> {
-            return Pair.of(new Identifier("textures/entity/sled/" + type.getName() + ".png"), new EntityPlayerSledModel());
+            return Pair.of(new Identifier("owf:textures/entity/sled/" + type.getName() + ".png"), new EntityPlayerSledModel());
         }));
     }
 

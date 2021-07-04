@@ -3,14 +3,14 @@
   "id": "owf",
   "version": "1.0",
 
-  "name": "Oh What Fun It Is!",
-  "description": "Adds sleds for carrying gear vital for your adventure across Overworld! Built for Modfest 1.17",
+  "name": "Oh What Fun!",
+  "description": "Adds sleds for carrying yourself and whatever vital gear for your snowy adventures across Overworld! Built for Modfest 1.17",
   "authors": [
     "quantamancer"
   ],
   "contact": {
     "homepage": "",
-    "sources": "https://github.com/quantamancer/OhWhatFunItIs"
+    "sources": "https://github.com/quantamancer/OhWhatFun"
   },
 
   "license": "MIT",

@@ -7,14 +7,14 @@
   ],
   "key": {
     "L": {
-      "item": "minecraft:jungle_planks"
+      "item": "minecraft:spruce_planks"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "owf:jungle_player_sled",
+    "item": "owf:spruce_sled",
     "count": 1
   }
 }

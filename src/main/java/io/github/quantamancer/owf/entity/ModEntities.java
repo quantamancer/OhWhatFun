@@ -15,16 +15,16 @@ import net.minecraft.util.registry.Registry;
 
 public class ModEntities {
 
-    public static final EntityType<EntityPlayerSled> PLAYER_SLED = Registry.register(
+    public static final EntityType<EntityPlayerSled> SLED = Registry.register(
             Registry.ENTITY_TYPE,
-            new Identifier("owf", "player_sled"),
+            new Identifier("owf", "sled"),
             FabricEntityTypeBuilder.create(SpawnGroup.MISC, EntityPlayerSled::new).dimensions(new EntityDimensions(1F, 0.75F, true)).build()
     );
 
     @Environment(EnvType.CLIENT)
     public static void register() {
-        FabricDefaultAttributeRegistry.register(PLAYER_SLED, EntityPlayerSled.createBaseHorseAttributes());
-        EntityRendererRegistry.INSTANCE.register(PLAYER_SLED, EntityPlayerSledRenderer::new);
+        FabricDefaultAttributeRegistry.register(SLED, EntityPlayerSled.createBaseHorseAttributes());
+        EntityRendererRegistry.INSTANCE.register(SLED, EntityPlayerSledRenderer::new);
     }
 
 }

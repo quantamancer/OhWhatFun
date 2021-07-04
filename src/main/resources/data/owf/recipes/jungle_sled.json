@@ -7,14 +7,14 @@
   ],
   "key": {
     "L": {
-      "item": "minecraft:dark_oak_planks"
+      "item": "minecraft:jungle_planks"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "owf:dark_oak_player_sled",
+    "item": "owf:jungle_sled",
     "count": 1
   }
 }

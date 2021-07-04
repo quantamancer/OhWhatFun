@@ -16,12 +16,12 @@ public class ModItems {
     public static final ItemPlayerSledSpawner DARK_OAK_SLED_SPAWNER = new ItemPlayerSledSpawner(EntityPlayerSled.SledType.DARK_OAK, new FabricItemSettings().group(ItemGroup.TRANSPORTATION));
 
     public static void register() {
-        Registry.register(Registry.ITEM, new Identifier("owf", "oak_player_sled"), OAK_SLED_SPAWNER);
-        Registry.register(Registry.ITEM, new Identifier("owf", "spruce_player_sled"), SPRUCE_SLED_SPAWNER);
-        Registry.register(Registry.ITEM, new Identifier("owf", "birch_player_sled"), BIRCH_SLED_SPAWNER);
-        Registry.register(Registry.ITEM, new Identifier("owf", "jungle_player_sled"), JUNGLE_SLED_SPAWNER);
-        Registry.register(Registry.ITEM, new Identifier("owf", "acacia_player_sled"), ACACIA_SLED_SPAWNER);
-        Registry.register(Registry.ITEM, new Identifier("owf", "dark_oak_player_sled"), DARK_OAK_SLED_SPAWNER);
+        Registry.register(Registry.ITEM, new Identifier("owf", "oak_sled"), OAK_SLED_SPAWNER);
+        Registry.register(Registry.ITEM, new Identifier("owf", "spruce_sled"), SPRUCE_SLED_SPAWNER);
+        Registry.register(Registry.ITEM, new Identifier("owf", "birch_sled"), BIRCH_SLED_SPAWNER);
+        Registry.register(Registry.ITEM, new Identifier("owf", "jungle_sled"), JUNGLE_SLED_SPAWNER);
+        Registry.register(Registry.ITEM, new Identifier("owf", "acacia_sled"), ACACIA_SLED_SPAWNER);
+        Registry.register(Registry.ITEM, new Identifier("owf", "dark_oak_sled"), DARK_OAK_SLED_SPAWNER);
     }
 
 }

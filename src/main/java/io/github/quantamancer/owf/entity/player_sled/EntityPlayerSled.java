@@ -50,7 +50,7 @@ public class EntityPlayerSled extends HorseEntity implements Inventory, NamedScr
     }
 
     public static EntityPlayerSled spawn (World world, double x, double y, double z, float yaw) {
-        EntityPlayerSled sled = new EntityPlayerSled(ModEntities.PLAYER_SLED, world);
+        EntityPlayerSled sled = new EntityPlayerSled(ModEntities.SLED, world);
         sled.setPosition(x, y ,z);
         sled.setVelocity(Vec3d.ZERO);
         sled.prevX = x;
